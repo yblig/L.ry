@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library • UTS Kelas 6 SDWS</title>
+<style>
+:root {
+  --bg: #f8f6ff;
+  --paper: rgba(255, 255, 255, 0.88);
+  --ink: #2d2a3e;
+  --muted: #7a7690;
+  --blue: #4f46e5;
+  --accent: #8b5cf6;
+  --line: rgba(139, 92, 246, 0.15);
+  --tile: rgba(139, 92, 246, 0.08);
+  --shadow: 0 8px 32px rgba(80, 60, 150, 0.12);
+  --glass: blur(12px);
+  --success: #10b981;
+  --error: #ef4444;
+  --radius: 16px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  transition: background 0.4s, color 0.4s;
+  background-image: radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.shell { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+.top { display: flex; justify-content: space-between; align-items: center; padding: 15px 0 25px; flex-wrap: wrap; gap: 15px; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brandicon { font-size: 28px; background: linear-gradient(135deg, var(--accent), var(--blue)); width: 54px; height: 54px; display: grid; place-items: center; border-radius: 18px; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); color: white; }
+h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.sub { color: var(--muted); font-size: 12px; font-weight: 500; margin-top: 3px; }
+
+.toptools { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { border: 1px solid var(--line); background: var(--paper); backdrop-filter: var(--glass); color: var(--ink); padding: 10px 16px; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; transition: var(--transition); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--accent); }
+.btn:active { transform: scale(0.97); }
+
+.hero { border-radius: 28px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(16, 185, 129, 0.05)); backdrop-filter: var(--glass); border: 1px solid rgba(255,255,255,0.6); padding: 30px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); margin-bottom: 25px; position: relative; overflow: hidden; }
+.hero::after { content: "✦"; position: absolute; right: 10%; top: 10px; font-size: 40px; color: var(--accent); opacity: 0.2; animation: float 6s ease-in-out infinite; }
+.hero h2 { font-size: clamp(24px, 4vw, 36px); line-height: 1.2; margin: 8px 0; font-weight: 800; background: linear-gradient(to right, var(--ink), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { color: var(--muted); font-size: 14px; max-width: 500px; line-height: 1.6; }
+.heroArt { font-size: clamp(60px, 8vw, 90px); animation: bob 4s ease-in-out infinite; filter: drop-shadow(0 10px 15px rgba(139, 92, 246, 0.2)); }
+
+.themes { display: flex; align-items: center; gap: 10px; margin: 15px 0 25px; flex-wrap: wrap; }
+.themes small { color: var(--muted); font-weight: 700; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+.swatch { width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; transition: var(--transition); }
+.swatch:hover { transform: scale(1.2); }
+
+.crumbs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 10px 0; font-size: 13px; font-weight: 600; }
+.crumb { border: 0; background: none; color: var(--blue); cursor: pointer; padding: 4px 0; font-weight: 700; }
+.crumb:hover { text-decoration: underline; }
+.crumb:last-child { color: var(--muted); pointer-events: none; }
+
+.toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 15px 0 20px; }
+.search { flex: 1; min-width: 200px; }
+.search input { width: 100%; border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; background: var(--paper); backdrop-filter: var(--glass); color: var(--ink); font-size: 14px; transition: var(--transition); }
+.search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+
+.titleRow { display: flex; justify-content: space-between; align-items: end; margin: 25px 0 15px; }
+.titleRow h2 { font-size: 20px; font-weight: 800; }
+.titleRow p { color: var(--muted); font-size: 13px; }
+
+.files { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+.folder, .filecard { border: 1px solid var(--line); background: var(--paper); backdrop-filter: var(--glass); border-radius: 20px; padding: 20px; text-align: left; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: var(--transition); position: relative; overflow: hidden; animation: appear 0.4s ease both; }
+.folder:hover, .filecard:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: var(--accent); }
+.folder:active, .filecard:active { transform: scale(0.98); }
+
+.foldericon { font-size: 40px; display: block; margin-bottom: 15px; }
+.fileicon { width: 44px; height: 44px; border-radius: 14px; background: var(--tile); display: grid; place-items: center; font-size: 22px; margin-bottom: 15px; color: var(--accent); }
+.folder h3, .filecard h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
+.folder p, .filecard p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+.folderfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.pill { border-radius: 8px; padding: 4px 10px; background: var(--tile); font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.empty { text-align: center; padding: 50px; color: var(--muted); font-weight: 600; }
+.hidden { display: none !important; }
+
+.readerShade { position: fixed; inset: 0; background: rgba(30, 25, 50, 0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+.readerShade.open { display: flex; animation: fade 0.3s ease; }
+
+.reader { width: min(800px, 100%); max-height: 92vh; overflow-y: auto; border-radius: 28px; background: var(--paper); backdrop-filter: var(--glass); border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 25px 80px rgba(0,0,0,0.25); animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; }
+
+.readerTop { position: sticky; top: 0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+.readerTop small { color: var(--muted); font-weight: 700; letter-spacing: 0.5px; font-size: 11px; }
+.readerTop h2 { font-size: 18px; font-weight: 800; margin-top: 4px; }
+.close { border: 0; border-radius: 12px; background: var(--tile); color: var(--ink); font-size: 24px; width: 40px; height: 40px; cursor: pointer; transition: var(--transition); display: grid; place-items: center; }
+.close:hover { background: var(--error); color: white; transform: rotate(90deg); }
+
+.progress { height: 5px; background: var(--line); width: 100%; }
+.progress span { display: block; height: 100%; background: linear-gradient(to right, var(--accent), var(--blue)); transition: width 0.4s ease; }
+
+.readerBody { padding: 30px; font-size: 16px; line-height: 1.7; }
+
+/* Passage Box - Teks Bacaan */
+.passageBox { background: #fdfcff; border: 2px solid var(--accent); border-radius: 20px; padding: 25px; margin-bottom: 30px; line-height: 1.9; color: var(--ink); position: relative; overflow: hidden; }
+.passageBox::before { content: "📖"; position: absolute; top: -10px; right: 15px; font-size: 60px; opacity: 0.08; }
+.passageBox h3 { font-size: 18px; color: var(--accent); margin-bottom: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.passageBox h3::before { content: "📄"; font-size: 20px; }
+.passageBox p { margin-bottom: 14px; font-size: 15px; text-align: justify; }
+.passageBox p:last-child { margin-bottom: 0; }
+.passageBox .passage-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; color: var(--muted); margin-bottom: 10px; display: block; }
+
+.label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; color: var(--muted); margin: 25px 0 10px; display: flex; align-items: center; gap: 8px; }
+.label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.qbox { background: var(--tile); border-radius: 16px; padding: 20px; font-size: 17px; font-weight: 600; color: var(--ink); margin-bottom: 20px; border-left: 4px solid var(--accent); }
+
+.options-container { display: grid; gap: 12px; margin-bottom: 25px; }
+.option-btn { text-align: left; padding: 16px 20px; border-radius: 14px; border: 2px solid var(--line); background: var(--paper); color: var(--ink); font-size: 15px; font-weight: 500; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; }
+.option-btn:hover:not(.disabled) { border-color: var(--accent); background: rgba(139, 92, 246, 0.05); transform: translateX(5px); }
+.option-btn.selected { border-color: var(--accent); background: rgba(139, 92, 246, 0.1); font-weight: 700; }
+.option-btn.correct { border-color: var(--success); background: rgba(16, 185, 129, 0.1); color: var(--success); font-weight: 700; }
+.option-btn.wrong { border-color: var(--error); background: rgba(239, 68, 68, 0.1); color: var(--error); font-weight: 700; }
+.option-btn.disabled { cursor: not-allowed; opacity: 0.7; }
+
+.option-badge { width: 28px; height: 28px; border-radius: 8px; background: var(--tile); display: grid; place-items: center; font-weight: 800; font-size: 13px; flex-shrink: 0; transition: var(--transition); }
+.option-btn.correct .option-badge { background: var(--success); color: white; }
+.option-btn.wrong .option-badge { background: var(--error); color: white; }
+
+.isian-container { margin-bottom: 25px; }
+.isian-input { width: 100%; padding: 16px 20px; border-radius: 14px; border: 2px solid var(--line); background: var(--paper); font-size: 16px; font-family: inherit; transition: var(--transition); }
+.isian-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+.check-btn { margin-top: 12px; background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: var(--transition); }
+.check-btn:hover { background: var(--blue); transform: translateY(-2px); }
+
+.scratchWrap { position: relative; min-height: 80px; border-radius: 14px; overflow: hidden; background: #f8f9fa; border: 2px dashed var(--line); margin-top: 10px; }
+.scratchAnswer { padding: 20px; color: var(--ink); font-weight: 700; line-height: 1.6; min-height: 80px; font-size: 15px; }
+.scratchCanvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; transition: opacity 0.4s; }
+.scratchHint { font-size: 12px; color: var(--muted); margin-top: 8px; text-align: center; font-style: italic; }
+
+.exbox { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 16px; padding: 20px; color: #166534; font-size: 15px; line-height: 1.7; margin-top: 10px; display: none; animation: slideDown 0.3s ease; }
+.exbox.visible { display: block; }
+.exbox strong { color: #14532d; }
+
+.readerControls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; border-top: 1px solid var(--line); padding-top: 20px; }
+.readerControls .btn { flex: 1; min-width: 120px; justify-content: center; }
+
+@keyframes appear { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+  .shell { padding: 15px; }
+  .hero { flex-direction: column; text-align: center; padding: 20px; }
+  .heroArt { display: none; }
+  .files { grid-template-columns: 1fr; }
+  .readerBody { padding: 20px; }
+  .readerControls .btn { flex: 1 1 100%; }
+}
+
+body.night-mode {
+  --bg: #111827;
+  --paper: rgba(31, 41, 55, 0.88);
+  --ink: #f3f4f6;
+  --muted: #9ca3af;
+  --line: rgba(156, 163, 175, 0.2);
+  --tile: rgba(156, 163, 175, 0.1);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+body.night-mode .readerTop { background: rgba(31, 41, 55, 0.9); }
+body.night-mode .passageBox { background: #1f2937; border-color: #8b5cf6; }
+body.night-mode .exbox { background: #064e3b; border-color: #065f46; color: #d1fae5; }
+body.night-mode .exbox strong { color: #a7f3d0; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand">
+      <div class="brandicon">🗃️</div>
+      <div>
+        <h1>Library — UTS Kelas 6</h1>
+        <div class="sub">Perpustakaan materi interaktif</div>
+      </div>
+    </div>
+    <div class="toptools">
+      <button class="btn" id="minus">A−</button>
+      <button class="btn" id="plus">A+</button>
+      <button class="btn" id="reset">Reset zoom</button>
+      <button class="btn" id="randomBtn">🎲 Soal acak</button>
+      <button class="btn" id="nightModeBtn">🌙 Mode Gelap</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="sub">WELCOME TO YOUR STUDY SPACE ✦</div>
+      <h2>Belajar jadi lebih<br>interaktif & menyenangkan.</h2>
+      <p>Setiap soal berbasis teks kini dilengkapi bacaan lengkap. Baca, pahami, lalu jawab.</p>
+    </div>
+    <div class="heroArt">📁✨</div>
+  </section>
+
+  <div class="themes">
+    <small>THEME</small>
+    <button class="swatch" data-t="lavender" style="background:#b9a8ee" title="Lavender"></button>
+    <button class="swatch" data-t="peach" style="background:#efb49c" title="Peach"></button>
+    <button class="swatch" data-t="mint" style="background:#91d4bf" title="Mint"></button>
+    <button class="swatch" data-t="blue" style="background:#9bc8ed" title="Sky blue"></button>
+    <button class="swatch" data-t="pink" style="background:#e7a9ca" title="Pink"></button>
+    <button class="swatch" data-t="lemon" style="background:#e4d17e" title="Lemon"></button>
+    <button class="swatch" data-t="night" style="background:#55536f" title="Night"></button>
+  </div>
+
+  <nav class="crumbs" id="crumbs"><span>🏠</span><span>Library</span></nav>
+
+  <div class="toolbar">
+    <label class="search">
+      <input id="search" placeholder="Cari folder atau soal..." type="search">
+    </label>
+    <button class="btn" id="homeBtn">🏠 Beranda</button>
+  </div>
+
+  <div class="titleRow">
+    <div>
+      <h2 id="viewTitle">📂 Library</h2>
+      <p id="viewDesc">Pilih folder untuk mulai belajar.</p>
+    </div>
+    <span class="sub" id="itemCount">2 folder</span>
+  </div>
+
+  <div class="files" id="files"></div>
+  <div class="empty hidden" id="empty">🔎 Tidak ada file yang cocok. Coba kata kunci lain.</div>
+
+  <footer style="text-align: center; color: var(--muted); font-size: 12px; padding: 40px 0 20px;">
+    Made with ☁️ and pastel colors • Belajar santai, paham sampai hati.
+  </footer>
+</div>
+
+<div class="readerShade" id="shade">
+  <article class="reader">
+    <div class="progress"><span id="progress"></span></div>
+    <header class="readerTop">
+      <div>
+        <small id="rMeta">FILE</small>
+        <h2 id="rTitle">Judul</h2>
+      </div>
+      <button class="close" id="close">×</button>
+    </header>
+    <div class="readerBody" id="rBody"></div>
+  </article>
+</div>
+
+<script>
+// ==========================================
+// DATA BANK SOAL (DENGAN TEKS BACAAN LENGKAP)
+// ==========================================
+const passages = {
+  hujan: {
+    title: "Proses Terjadinya Hujan",
+    content: `<p>Hujan merupakan salah satu fenomena alam yang terjadi melalui suatu proses. Air di permukaan bumi terkena panas matahari sehingga mengalami penguapan. Uap air tersebut naik ke atmosfer dan mengalami pendinginan. Selanjutnya, uap air berubah menjadi titik-titik air dan berkumpul membentuk awan. Ketika titik-titik air semakin banyak dan berat, air jatuh ke permukaan bumi sebagai hujan.</p>`
+  },
+  gempa: {
+    title: "Gempa Bumi",
+    content: `<p>Gempa bumi adalah getaran yang terjadi di permukaan bumi akibat adanya pelepasan energi dari dalam bumi. Fenomena ini dapat terjadi karena pergerakan lempeng bumi. Gempa bumi dapat menyebabkan kerusakan bangunan, tanah longsor, dan korban jiwa. Oleh karena itu, kita perlu memahami penyebab dan cara menghadapi gempa bumi.</p>`
+  },
+  akar: {
+    title: "Proses Penyerapan Air oleh Akar Pohon",
+    content: `<p>Akar pohon menyerap air dari dalam tanah. Air tersebut kemudian bergerak menuju batang dan daun. Setelah itu, air digunakan dalam berbagai proses kehidupan tumbuhan, seperti fotosintesis. Air juga membantu mengangkut nutrisi dari dalam tanah ke seluruh bagian tumbuhan.</p>`
+  },
+  banjir: {
+    title: "Penyebab Banjir",
+    content: `<p>Banjir merupakan fenomena alam yang sering terjadi di berbagai daerah. Banjir dapat disebabkan oleh hujan yang turun dengan intensitas tinggi dalam waktu yang lama. Selain itu, saluran air yang tidak mampu menampung air juga dapat menyebabkan banjir. Faktor lain seperti penebangan hutan secara liar dan pembuangan sampah ke sungai juga memperparah banjir.</p>`
+  },
+  gunung: {
+    title: "Proses Gunung Meletus",
+    content: `<p>Gunung meletus merupakan fenomena alam yang terjadi akibat adanya tekanan magma dan gas di dalam bumi. Tekanan tersebut mendorong magma keluar ke permukaan bumi. Saat gunung meletus, material vulkanik seperti lava, abu, dan gas panas dimuntahkan ke udara. Letusan gunung dapat menimbulkan berbagai dampak, baik bagi lingkungan maupun kehidupan manusia.</p>`
+  }
+};
+
+const bank = [
+  // --- BAHASA INDONESIA: HUJAN ---
+  {
+    subject: "Bahasa Indonesia",
+    id: "1. Alasan teks proses terjadinya hujan",
+    passage: "hujan",
+    question: "Mengapa teks “Proses Terjadinya Hujan” termasuk teks eksplanasi?",
+    type: "pg",
+    options: [
+      "A. Menceritakan pengalaman seseorang hujan",
+      "B. Menjelaskan proses terjadinya suatu fenomena secara sebab-akibat",
+      "C. Mengajak pembaca selalu membawa payung",
+      "D. Menggambarkan keindahan hujan dengan bahasa yang menarik"
+    ],
+    answer: "B",
+    explanation: "Teks tersebut menjelaskan urutan proses air menguap, mengalami pendinginan, membentuk awan, lalu turun sebagai hujan."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "2. Informasi penting tentang hujan",
+    passage: "hujan",
+    question: "Informasi penting apa yang terdapat dalam teks proses terjadinya hujan?",
+    type: "pg",
+    options: [
+      "A. Hujan hanya terjadi pada musim tertentu",
+      "B. Panas matahari menyebabkan air menguap dan menjadi bagian dari terjadinya hujan",
+      "C. Awan selalu berwarna putih sebelum hujan",
+      "D. Semua hujan memiliki jumlah air sama"
+    ],
+    answer: "B",
+    explanation: "Panas matahari memulai penguapan. Uap air lalu mengalami pendinginan dan berkumpul membentuk awan."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "3. Setelah uap air naik ke atmosfer",
+    passage: "hujan",
+    question: "Apa yang terjadi setelah uap air naik ke atmosfer?",
+    type: "pg",
+    options: [
+      "A. Uap air langsung jatuh ke bumi",
+      "B. Uap air berubah menjadi es",
+      "C. Uap air mengalami pendinginan dan berubah menjadi titik-titik air",
+      "D. Uap air menghilang karena terkena angin"
+    ],
+    answer: "C",
+    explanation: "Uap air mendingin lalu mengembun menjadi titik air yang berkumpul membentuk awan."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "4. Kesimpulan gambar siklus hujan",
+    passage: "hujan",
+    question: "Apa kesimpulan paling tepat dari gambar proses terjadinya hujan?",
+    type: "pg",
+    options: [
+      "A. Air di bumi dapat mengalami perubahan dan perputaran secara terus-menerus",
+      "B. Air hujan hanya berasal dari air laut",
+      "C. Matahari menyebabkan semua air di bumi menghilang",
+      "D. Awan terbentuk tanpa adanya proses penguapan"
+    ],
+    answer: "A",
+    explanation: "Gambar menunjukkan siklus air yang berulang: penguapan, pembentukan awan, dan hujan."
+  },
+  // --- BAHASA INDONESIA: GEMPA BUMI ---
+  {
+    subject: "Bahasa Indonesia",
+    id: "5. Struktur teks tentang gempa bumi",
+    passage: "gempa",
+    question: "Kutipan yang mengenalkan pengertian gempa bumi termasuk bagian struktur teks eksplanasi apa?",
+    type: "pg",
+    options: [
+      "A. Interpretasi",
+      "B. Pernyataan umum",
+      "C. Deretan penjelas",
+      "D. Penutup cerita"
+    ],
+    answer: "B",
+    explanation: "Pernyataan umum mengenalkan fenomena yang akan dijelaskan sebelum rincian proses atau penyebabnya."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "6. Kata karena dan kemudian",
+    passage: "hujan",
+    question: "Kata “karena” dan “kemudian” merupakan jenis kata apa?",
+    type: "pg",
+    options: [
+      "A. Kata sifat dan kata benda",
+      "B. Konjungsi kausalitas dan konjungsi kronologis",
+      "C. Kata kerja dan kata sifat",
+      "D. Kata benda dan kata bilangan"
+    ],
+    answer: "B",
+    explanation: "“Karena” menunjukkan sebab, sedangkan “kemudian” menunjukkan urutan waktu."
+  },
+  // --- BAHASA INDONESIA: AKAR POHON ---
+  {
+    subject: "Bahasa Indonesia",
+    id: "7. Mengembangkan penjelasan tentang akar pohon",
+    passage: "akar",
+    question: "Setelah akar menyerap air dan air bergerak ke batang serta daun, kalimat lanjutan yang paling tepat adalah apa?",
+    type: "pg",
+    options: [
+      "A. Pohon-pohon itu sangat indah dan rindang",
+      "B. Setelah itu, air digunakan dalam berbagai proses kehidupan tumbuhan",
+      "C. Saya sangat menyukai pohon yang rindang",
+      "D. Pohon tersebut berada di halaman sekolah"
+    ],
+    answer: "B",
+    explanation: "Kalimat ini melanjutkan penjelasan secara logis tentang fungsi air bagi tumbuhan."
+  },
+  // --- BAHASA INDONESIA: BANJIR ---
+  {
+    subject: "Bahasa Indonesia",
+    id: "9. Hubungan dalam kalimat tentang banjir",
+    passage: "banjir",
+    question: "Hujan turun dengan intensitas tinggi dan saluran air tidak mampu menampung air. Hubungan yang dijelaskan adalah apa?",
+    type: "pg",
+    options: [
+      "A. Sebab-akibat",
+      "B. Akibat-sebab",
+      "C. Perbandingan",
+      "D. Penegasan"
+    ],
+    answer: "A",
+    explanation: "Hujan deras dan saluran yang tidak mampu menampung air dapat menjadi penyebab banjir."
+  },
+  // --- BAHASA INDONESIA: GUNUNG MELETUS ---
+  {
+    subject: "Bahasa Indonesia",
+    id: "10. Kalimat penjelas gunung meletus",
+    passage: "gunung",
+    question: "Kalimat mana yang paling tepat untuk menjelaskan fenomena gunung meletus?",
+    type: "pg",
+    options: [
+      "A. Gunung meletus sangat indah pemandangannya",
+      "B. Marilah kita mengungsi ke tempat yang aman",
+      "C. Gunung meletus terjadi akibat adanya tekanan magma dan gas di dalam bumi",
+      "D. Liburan ke gunung sangat menyenangkan"
+    ],
+    answer: "C",
+    explanation: "Kalimat ini menyampaikan sebab ilmiah. Pilihan yang berupa ajakan, pendapat, atau cerita liburan tidak menjelaskan penyebab fenomena."
+  },
+  // --- PENDIDIKAN PANCASILA ---
+  {
+    subject: "Pendidikan Pancasila",
+    id: "1. Nilai Pancasila saling berkaitan",
+    question: "Saat kerja kelompok, Made mengajak berdoa, membagi tugas adil, dan membantu teman. Perilaku itu menunjukkan apa?",
+    type: "pg",
+    options: [
+      "A. Setiap sila Pancasila berdiri sendiri",
+      "B. Sila pertama hanya berhubungan dengan keagamaan",
+      "C. Nilai dalam satu sila dapat diterapkan bersama dengan nilai sila lainnya",
+      "D. Sila kelima lebih penting daripada sila lainnya"
+    ],
+    answer: "C",
+    explanation: "Sikap tersebut memadukan nilai ketuhanan, kepedulian, kerja sama, dan keadilan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "2. Berbeda suku dan menerima hasil suara",
+    question: "Siswa berbeda suku berdiskusi lalu menerima hasil pemungutan suara. Hubungan sila yang tepat adalah apa?",
+    type: "pg",
+    options: [
+      "A. Sila ke-1 dan ke-2",
+      "B. Sila ke-2, ke-3, dan ke-4",
+      "C. Sila ke-1 dan ke-5",
+      "D. Sila ke-3 dan ke-4"
+    ],
+    answer: "D",
+    explanation: "Sila ke-3 berkaitan dengan persatuan di tengah perbedaan. Sila ke-4 berkaitan dengan proses pengambilan keputusan bersama."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "3. Menyelesaikan ejekan antarkelompok",
+    question: "Salah satu kelompok mengejek kelompok lain karena kalah lomba. Sikap paling sesuai Pancasila adalah apa?",
+    type: "pg",
+    options: [
+      "A. Membalas ejekan agar kelompok lain malu",
+      "B. Membiarkan perselisihan sampai berhenti",
+      "C. Mengajak kedua kelompok berdiskusi",
+      "D. Meminta kelompok yang kalah meninggalkan sekolah"
+    ],
+    answer: "C",
+    explanation: "Diskusi membantu menyelesaikan konflik secara damai tanpa membalas ejekan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "4. Membagikan bantuan",
+    question: "Ketua kelas membagikan bantuan kepada siswa yang membutuhkan. Agar sesuai nilai Pancasila, ia sebaiknya bagaimana?",
+    type: "pg",
+    options: [
+      "A. Memberikan bantuan hanya pada sahabatnya",
+      "B. Memberikan bantuan secara adil",
+      "C. Memberikan bantuan kepada siswa populer",
+      "D. Memilih siswa yang memiliki nilai tertinggi"
+    ],
+    answer: "B",
+    explanation: "Bantuan diberikan berdasarkan kebutuhan, bukan karena persahabatan atau popularitas."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "5. Pancasila sebagai dasar negara",
+    question: "Peraturan negara tidak boleh bertentangan dengan nilai Pancasila. Ini menunjukkan kedudukan Pancasila sebagai apa?",
+    type: "pg",
+    options: [
+      "A. Lambang negara",
+      "B. Dasar negara",
+      "C. Semboyan negara",
+      "D. Budaya daerah"
+    ],
+    answer: "B",
+    explanation: "Pancasila menjadi landasan penyelenggaraan negara dan pedoman dalam membuat peraturan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "6. Pancasila sebagai pedoman hidup",
+    question: "Rani menyelesaikan masalah dengan musyawarah, menghargai orang lain, dan berlaku adil. Pancasila berfungsi sebagai apa?",
+    type: "pg",
+    options: [
+      "A. Pandangan hidup bangsa",
+      "B. Lagu kebangsaan",
+      "C. Lambang negara",
+      "D. Identitas sekolah"
+    ],
+    answer: "A",
+    explanation: "Nilai Pancasila menjadi pedoman dalam mengambil sikap dan bertindak sehari-hari."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "7. Perbedaan pendapat tujuan wisata",
+    question: "Sebagian siswa ingin ke museum dan lainnya ingin ke taman. Tindakan terbaik adalah apa?",
+    type: "pg",
+    options: [
+      "A. Mengikuti keinginan siswa yang pintar",
+      "B. Membatalkan kegiatan",
+      "C. Mencari keputusan bersama",
+      "D. Meminta guru memilih"
+    ],
+    answer: "C",
+    explanation: "Musyawarah memberi kesempatan kepada siswa untuk menyampaikan alasan dan mencari kesepakatan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "8. Pendapat dan pembagian tugas adil",
+    question: "Dalam rapat kelas, semua siswa boleh menyampaikan pendapat lalu tugas dibagi adil. Hubungan nilai yang paling langsung tampak adalah apa?",
+    type: "pg",
+    options: [
+      "A. Sila ke-1 dan ke-2",
+      "B. Sila ke-2 dan ke-3",
+      "C. Sila ke-4 dan ke-5",
+      "D. Sila ke-1 dan ke-5"
+    ],
+    answer: "C",
+    explanation: "Sila ke-4 berkaitan dengan kesempatan menyampaikan pendapat dan keputusan bersama. Sila ke-5 berkaitan dengan keadilan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "9. Karya penerapan Pancasila di sekolah",
+    question: "Karya apa yang paling tepat untuk menunjukkan penerapan Pancasila di sekolah?",
+    type: "pg",
+    options: [
+      "A. Poster berisi ajakan menghargai perbedaan",
+      "B. Gambar tokoh terkenal tanpa pesan",
+      "C. Daftar nama siswa yang mendapat nilai tinggi",
+      "D. Poster yang membandingkan kelebihan suku"
+    ],
+    answer: "A",
+    explanation: "Poster tersebut menyampaikan pesan toleransi dan persatuan secara jelas."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "10. Pembagian pekerjaan bakti",
+    question: "Saat kerja bakti, sebagian siswa memilih pekerjaan ringan dan siswa lain mengerjakan pekerjaan berat. Agar sesuai Pancasila, sebaiknya bagaimana?",
+    type: "pg",
+    options: [
+      "A. Siswa yang kuat mengerjakan semua",
+      "B. Pekerjaan dibagi secara adil sesuai kemampuan",
+      "C. Siswa yang tidak mau bekerja dibiarkan",
+      "D. Pekerjaan diberikan kepada siswa rajin saja"
+    ],
+    answer: "B",
+    explanation: "Gotong royong berarti bekerja bersama dengan pembagian tugas yang adil dan mempertimbangkan kemampuan."
+  },
+  // --- ISIAN SINGKAT ---
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 1. Hubungan antarsila",
+    question: "Sila-sila Pancasila memiliki hubungan yang saling ____ dan tidak dapat dipisahkan.",
+    type: "isian",
+    answer: "berkaitan",
+    explanation: "Setiap sila saling mendukung dan menjadi satu kesatuan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 2. Menghargai agama",
+    question: "Menghargai teman yang berbeda agama merupakan penerapan sila ke-____.",
+    type: "isian",
+    answer: "1",
+    explanation: "Sila pertama berkaitan dengan Ketuhanan Yang Maha Esa dan penghormatan terhadap agama serta kepercayaan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 3. Kedudukan Pancasila",
+    question: "Pancasila berkedudukan sebagai ____ negara Indonesia.",
+    type: "isian",
+    answer: "dasar",
+    explanation: "Pancasila menjadi dasar negara Indonesia."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 4. Pandangan hidup",
+    question: "Pancasila sebagai ____ hidup bangsa menjadi pedoman dalam bersikap.",
+    type: "isian",
+    answer: "pandangan",
+    explanation: "Pandangan hidup menjadi pedoman dalam menentukan sikap dan tindakan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 5. Musyawarah",
+    question: "Mengambil keputusan melalui musyawarah merupakan penerapan sila ke-____.",
+    type: "isian",
+    answer: "4",
+    explanation: "Sila keempat menekankan musyawarah dan perwakilan dalam mengambil keputusan."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 6. Menolong korban bencana",
+    question: "Menolong korban bencana tanpa membedakan suku dan agama menunjukkan hubungan sila ke-2 dengan sila ke-____.",
+    type: "isian",
+    answer: "3",
+    explanation: "Menolong menunjukkan kemanusiaan (sila ke-2), sedangkan tidak membeda-bedakan dan menjaga kebersamaan mendukung persatuan (sila ke-3)."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 7. Menghargai pendapat",
+    question: "Dalam musyawarah, kita harus menghargai ____ orang lain meskipun berbeda dari pendapat kita.",
+    type: "isian",
+    answer: "pendapat",
+    explanation: "Setiap peserta berhak menyampaikan pendapat dan harus saling menghormati."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 8. Karya ajakan Pancasila",
+    question: "Salah satu karya untuk mengajak warga sekolah menerapkan Pancasila adalah ____ .",
+    type: "isian",
+    answer: "poster",
+    explanation: "Poster dapat berisi pesan singkat tentang toleransi, keadilan, persatuan, dan gotong royong."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 9. Membagi tugas adil",
+    question: "Membagi tugas kelompok secara adil merupakan penerapan sila ke-____.",
+    type: "isian",
+    answer: "5",
+    explanation: "Sila kelima menekankan keadilan sosial bagi seluruh rakyat Indonesia."
+  },
+  {
+    subject: "Pendidikan Pancasila",
+    id: "Isian 10. Membersihkan sekolah",
+    question: "Bekerja sama membersihkan lingkungan sekolah merupakan contoh penerapan nilai ____ .",
+    type: "isian",
+    answer: "gotong royong",
+    explanation: "Gotong royong adalah bekerja bersama untuk mencapai tujuan yang bermanfaat bagi semua."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 1. Pengertian teks eksplanasi",
+    question: "Teks yang menjelaskan proses terjadinya fenomena alam, sosial, atau budaya disebut teks ____.",
+    type: "isian",
+    answer: "eksplanasi",
+    explanation: "Teks eksplanasi menjelaskan bagaimana atau mengapa suatu fenomena terjadi."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 2. Struktur awal teks eksplanasi",
+    question: "Bagian yang berisi pengenalan atau gambaran umum tentang fenomena disebut ____.",
+    type: "isian",
+    answer: "pernyataan umum",
+    explanation: "Pernyataan umum memperkenalkan fenomena yang akan dibahas."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 3. Informasi inti",
+    question: "Informasi yang menjadi inti atau hal paling penting dalam teks disebut informasi ____.",
+    type: "isian",
+    answer: "pokok",
+    explanation: "Informasi pokok adalah gagasan atau fakta utama yang perlu dipahami pembaca."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 4. Deretan penjelas",
+    question: "Bagian teks yang menjelaskan proses terjadinya fenomena secara rinci disebut ____.",
+    type: "isian",
+    answer: "deretan penjelas",
+    explanation: "Deretan penjelas menguraikan tahapan atau sebab-akibat secara lebih terperinci."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 5. Bagian akhir teks eksplanasi",
+    question: "Bagian akhir teks eksplanasi yang berisi simpulan atau tanggapan penulis disebut ____.",
+    type: "isian",
+    answer: "interpretasi",
+    explanation: "Interpretasi merupakan bagian penutup yang dapat berisi simpulan atau pandangan penulis."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 6. Konjungsi sebab-akibat",
+    question: "Kata penghubung yang menunjukkan hubungan sebab-akibat disebut konjungsi ____.",
+    type: "isian",
+    answer: "kausalitas",
+    explanation: "Contohnya karena, sebab, akibatnya, dan sehingga."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 7. Konjungsi urutan waktu",
+    question: "Kata kemudian, selanjutnya, dan setelah itu merupakan contoh konjungsi ____.",
+    type: "isian",
+    answer: "kronologis",
+    explanation: "Konjungsi kronologis menunjukkan urutan waktu atau urutan kejadian."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 8. Istilah khusus",
+    question: "Istilah khusus dalam bidang tertentu, misalnya evaporasi, kondensasi, dan presipitasi, disebut istilah ____.",
+    type: "isian",
+    answer: "teknis",
+    explanation: "Istilah teknis digunakan untuk menjelaskan konsep khusus dalam suatu bidang ilmu."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 9. Proses air menjadi uap",
+    question: "Air laut mendapatkan panas dari matahari sehingga mengalami ____.",
+    type: "isian",
+    answer: "penguapan",
+    explanation: "Panas matahari membuat air berubah menjadi uap air dan naik ke atmosfer."
+  },
+  {
+    subject: "Bahasa Indonesia",
+    id: "Isian 10. Pembentukan awan",
+    question: "Uap air yang mengalami pendinginan berubah menjadi titik-titik air. Selanjutnya, titik-titik air tersebut berkumpul membentuk ____.",
+    type: "isian",
+    answer: "awan",
+    explanation: "Titik-titik air kecil berkumpul di atmosfer dan membentuk awan; ketika cukup berat, air dapat turun sebagai hujan."
+  }
+];
+
+let path = [];
+let zoom = 16;
+let userAnswers = {};
+const $ = s => document.querySelector(s);
+const folderNames = ["Bahasa Indonesia", "Pendidikan Pancasila"];
+
+const themes = {
+  lavender: ["#f8f6ff", "rgba(255,255,255,0.85)", "#2d2a3e", "#8b5cf6", "rgba(139,92,246,0.08)", "rgba(139,92,246,0.15)"],
+  peach: ["#fff8f4", "rgba(255,255,255,0.85)", "#4a3b36", "#efb49c", "rgba(239,180,156,0.1)", "rgba(239,180,156,0.2)"],
+  mint: ["#f5fbf8", "rgba(255,255,255,0.85)", "#2d4a43", "#91d4bf", "rgba(145,212,191,0.1)", "rgba(145,212,191,0.2)"],
+  blue: ["#f5f9ff", "rgba(255,255,255,0.85)", "#2d3e4a", "#9bc8ed", "rgba(155,200,237,0.1)", "rgba(155,200,237,0.2)"],
+  pink: ["#fff7fb", "rgba(255,255,255,0.85)", "#4a2d3e", "#e7a9ca", "rgba(231,169,202,0.1)", "rgba(231,169,202,0.2)"],
+  lemon: ["#fffdf4", "rgba(255,255,255,0.85)", "#4a4732", "#e4d17e", "rgba(228,209,126,0.15)", "rgba(228,209,126,0.25)"],
+  night: ["#111827", "rgba(31,41,55,0.85)", "#f3f4f6", "#8b5cf6", "rgba(139,92,246,0.15)", "rgba(139,92,246,0.3)"]
+};
+
+function renderCrumbs() {
+  let c = $("#crumbs");
+  c.innerHTML = `<button class="crumb" data-home>🏠 Library</button>` + path.map((x, i) => `<span>›</span><button class="crumb" data-level="${i}">${x}</button>`).join("");
+  c.querySelector("[data-home]").onclick = () => { path = []; render(); };
+  c.querySelectorAll("[data-level]").forEach(b => b.onclick = () => { path = path.slice(0, +b.dataset.level + 1); render(); });
+}
+
+function render() {
+  renderCrumbs();
+  let term = $("#search").value.toLowerCase().trim();
+  let arr = [];
+
+  if (path.length === 0) {
+    $("#viewTitle").textContent = "📂 Library";
+    $("#viewDesc").textContent = "Pilih folder mata pelajaran untuk melihat seluruh soal.";
+    arr = folderNames.filter(x => !term || x.toLowerCase().includes(term)).map((s, i) => ({
+      type: "folder", name: s, count: bank.filter(b => b.subject === s).length, icon: i === 0 ? "📁" : "📂", id: s
+    }));
+  } else {
+    let s = path[0];
+    $("#viewTitle").textContent = (s === "Bahasa Indonesia" ? "📘 " : "🇮🇩 ") + s;
+    $("#viewDesc").textContent = "Klik file soal untuk membuka jawaban dan penjelasan.";
+    arr = bank.map((b, i) => ({ type: "file", data: b, id: i }))
+      .filter(x => x.data.subject === s && (!term || (x.data.id + x.data.question + (x.data.options ? x.data.options.join(" ") : "")).toLowerCase().includes(term)))
+      .map(x => ({ ...x, name: x.data.id, icon: x.data.type === "isian" ? "📝" : (x.data.passage ? "📖" : "📄") }));
+  }
+
+  $("#itemCount").textContent = arr.length + (path.length ? " file" : " folder");
+  $("#files").innerHTML = arr.map((x, i) => {
+    if (x.type === "folder") {
+      return `<button class="folder" data-folder="${x.id}" style="animation-delay:${i * 40}ms">
+        <span class="foldericon">${x.icon}</span>
+        <h3>${x.name}</h3>
+        <p>Folder mata pelajaran</p>
+        <div class="folderfoot"><span>${x.count} file soal</span><span>› Buka</span></div>
+      </button>`;
+    } else {
+      return `<button class="filecard" data-file="${x.id}" style="animation-delay:${i * 30}ms">
+        <span class="fileicon">${x.icon}</span>
+        <h3>${x.name}</h3>
+        <p>${x.data.subject}</p>
+        <div class="folderfoot">
+          <span class="pill">${x.data.type === "isian" ? "ISIAN" : (x.data.passage ? "TEKS BACAAN" : "PILIHAN GANDA")}</span>
+          <span>Buka ↗</span>
+        </div>
+      </button>`;
+    }
+  }).join("");
+
+  $("#empty").classList.toggle("hidden", arr.length > 0);
+  $("#files").classList.toggle("hidden", arr.length === 0);
+  $("#files").querySelectorAll("[data-folder]").forEach(b => b.onclick = () => { path = [b.dataset.folder]; $("#search").value = ""; render(); });
+  $("#files").querySelectorAll("[data-file]").forEach(b => b.onclick = () => openFile(+b.dataset.file));
+}
+
+function openFile(i) {
+  let b = bank[i];
+  $("#rMeta").textContent = `${b.subject.toUpperCase()} • SOAL ${i + 1} / ${bank.length}`;
+  $("#rTitle").textContent = b.id;
+  $("#progress").style.width = ((i + 1) / bank.length * 100) + "%";
+
+  // Tampilkan teks bacaan jika ada
+  let passageHTML = "";
+  if (b.passage && passages[b.passage]) {
+    const p = passages[b.passage];
+    passageHTML = `
+      <div class="label">📖 Teks Bacaan</div>
+      <div class="passageBox">
+        <span class="passage-label">Bacalah teks berikut dengan saksama</span>
+        <h3>${p.title}</h3>
+        ${p.content}
+      </div>`;
+  }
+
+  let interactionHTML = "";
+  if (b.type === "pg") {
+    interactionHTML = `
+      <div class="options-container" id="optionsContainer">
+        ${b.options.map((opt, idx) => {
+          let letter = opt.charAt(0);
+          let text = opt.substring(3);
+          return `<button class="option-btn" data-letter="${letter}" data-index="${idx}">
+            <span class="option-badge">${letter}</span>
+            <span>${text}</span>
+          </button>`;
+        }).join("")}
+      </div>
+    `;
+  } else if (b.type === "isian") {
+    interactionHTML = `
+      <div class="isian-container">
+        <input type="text" class="isian-input" id="isianInput" placeholder="Ketik jawabanmu di sini..." autocomplete="off">
+        <button class="check-btn" id="checkIsianBtn">Cek Jawaban</button>
+      </div>
+    `;
+  }
+
+  $("#rBody").innerHTML = `
+    ${passageHTML}
+    <div class="label">❔ Soal</div>
+    <div class="qbox">${b.question}</div>
+    <div class="label">✍️ Jawablah</div>
+    ${interactionHTML}
+    <div class="exbox" id="explanationBox">
+      <strong>💡 Penjelasan:</strong><br>${b.explanation}
+    </div>
+    <div class="label">🔑 Kunci Jawaban</div>
+    <div class="scratchWrap" id="scratchWrap">
+      <div class="scratchAnswer" id="answerText">${b.answer}</div>
+      <canvas class="scratchCanvas" id="scratchCanvas"></canvas>
+    </div>
+    <div class="scratchHint" id="scratchHint">Usap/gosok area di atas dengan jari atau mouse untuk melihat kunci jawaban.</div>
+    <div class="readerControls">
+      <button class="btn" id="prev" ${i === 0 ? 'disabled' : ''}>← Sebelumnya</button>
+      <button class="btn" id="next" ${i === bank.length - 1 ? 'disabled' : ''}>Berikutnya →</button>
+      <button class="btn" id="closeBtn">Tutup</button>
+    </div>
+  `;
+
+  if (b.type === "pg") {
+    const container = $("#optionsContainer");
+    const btns = container.querySelectorAll(".option-btn");
+    
+    if (userAnswers[i]) {
+      btns.forEach(btn => {
+        btn.classList.add("disabled");
+        if (btn.dataset.letter === userAnswers[i]) {
+          btn.classList.add(userAnswers[i] === b.answer ? "correct" : "wrong");
+        }
+        if (btn.dataset.letter === b.answer) {
+          btn.classList.add("correct");
+        }
+      });
+      $("#explanationBox").classList.add("visible");
+    }
+
+    btns.forEach(btn => {
+      btn.onclick = () => {
+        if (btn.classList.contains("disabled")) return;
+        const selected = btn.dataset.letter;
+        userAnswers[i] = selected;
+        btns.forEach(b => b.classList.add("disabled"));
+        
+        if (selected === b.answer) {
+          btn.classList.add("correct");
+        } else {
+          btn.classList.add("wrong");
+          btns.forEach(b => {
+            if (b.dataset.letter === b.answer) b.classList.add("correct");
+          });
+        }
+        $("#explanationBox").classList.add("visible");
+        clearScratch();
+      };
+    });
+  } else if (b.type === "isian") {
+    const input = $("#isianInput");
+    const checkBtn = $("#checkIsianBtn");
+    
+    if (userAnswers[i]) {
+      input.value = userAnswers[i];
+      input.disabled = true;
+      checkBtn.disabled = true;
+      checkBtn.textContent = "Sudah Dijawab";
+      checkBtn.style.background = "var(--muted)";
+      $("#explanationBox").classList.add("visible");
+      clearScratch();
+    }
+
+    checkBtn.onclick = () => {
+      const val = input.value.trim().toLowerCase();
+      if (!val) return;
+      userAnswers[i] = val;
+      input.disabled = true;
+      checkBtn.disabled = true;
+      
+      if (val === b.answer.toLowerCase()) {
+        input.style.borderColor = "var(--success)";
+        input.style.background = "rgba(16, 185, 129, 0.1)";
+        checkBtn.textContent = "✓ Benar!";
+        checkBtn.style.background = "var(--success)";
+      } else {
+        input.style.borderColor = "var(--error)";
+        input.style.background = "rgba(239, 68, 68, 0.1)";
+        checkBtn.textContent = "✗ Kurang Tepat";
+        checkBtn.style.background = "var(--error)";
+      }
+      $("#explanationBox").classList.add("visible");
+      clearScratch();
+    };
+    
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkBtn.click();
+    });
+  }
+
+  setupScratch();
+  $("#prev").onclick = () => openFile(i - 1);
+  $("#next").onclick = () => openFile(i + 1);
+  $("#closeBtn").onclick = close;
+  $("#close").onclick = close;
+  $("#shade").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function setupScratch() {
+  const canvas = $("#scratchCanvas");
+  const wrap = $("#scratchWrap");
+  if (!canvas || !wrap) return;
+  const ctx = canvas.getContext("2d");
+  let drawing = false;
+  let cleared = false;
+
+  function paint() {
+    const r = wrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(r.width * dpr));
+    canvas.height = Math.max(1, Math.floor(r.height * dpr));
+    canvas.style.width = r.width + "px";
+    canvas.style.height = r.height + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = "source-over";
+    const gradient = ctx.createLinearGradient(0, 0, r.width, r.height);
+    gradient.addColorStop(0, "#9ca3af");
+    gradient.addColorStop(0.5, "#6b7280");
+    gradient.addColorStop(1, "#4b5563");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, r.width, r.height);
+    ctx.fillStyle = "#f3f4f6";
+    ctx.font = "bold 14px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("GOSOK DI SINI ✦", r.width / 2, r.height / 2);
+    ctx.globalCompositeOperation = "destination-out";
+  }
+
+  function point(e) {
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  function rub(e) {
+    if (!drawing || cleared) return;
+    const p = point(e);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 25, 0, Math.PI * 2);
+    ctx.fill();
+    let data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let clear = 0;
+    for (let j = 3; j < data.length; j += 4) if (data[j] === 0) clear++;
+    if (clear / (data.length / 4) > 0.45) clearScratch();
+  }
+
+  function start(e) {
+    if (cleared) return;
+    drawing = true;
+    canvas.setPointerCapture?.(e.pointerId);
+    rub(e);
+  }
+
+  function end() { drawing = false; }
+
+  canvas.addEventListener("pointerdown", start);
+  canvas.addEventListener("pointermove", rub);
+  canvas.addEventListener("pointerup", end);
+  canvas.addEventListener("pointercancel", end);
+  paint();
+  window.addEventListener("resize", () => { if (!cleared) paint(); }, { once: true });
+}
+
+function clearScratch() {
+  const wrap = $("#scratchWrap");
+  const canvas = $("#scratchCanvas");
+  if (!wrap || !canvas) return;
+  wrap.classList.add("cleared");
+  const c = canvas.getContext("2d");
+  c.clearRect(0, 0, canvas.width, canvas.height);
+  $("#scratchHint").textContent = "✨ Jawaban terbuka!";
+}
+
+function close() {
+  $("#shade").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+$("#close").onclick = close;
+$("#shade").addEventListener("click", e => { if (e.target === $("#shade")) close(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+$("#homeBtn").onclick = () => { path = []; $("#search").value = ""; render(); };
+$("#search").oninput = render;
+$("#randomBtn").onclick = () => openFile(Math.floor(Math.random() * bank.length));
+
+$("#nightModeBtn").onclick = () => {
+  document.body.classList.toggle("night-mode");
+  const isNight = document.body.classList.contains("night-mode");
+  $("#nightModeBtn").textContent = isNight ? "☀️ Mode Terang" : "🌙 Mode Gelap";
+  const t = isNight ? themes.night : themes.lavender;
+  document.documentElement.style.setProperty("--bg", t[0]);
+  document.documentElement.style.setProperty("--paper", t[1]);
+  document.documentElement.style.setProperty("--ink", t[2]);
+  document.documentElement.style.setProperty("--accent", t[3]);
+  document.documentElement.style.setProperty("--tile", t[4]);
+  document.documentElement.style.setProperty("--line", t[5]);
+};
+
+document.querySelectorAll(".swatch").forEach(b => b.onclick = () => {
+  const t = themes[b.dataset.t];
+  document.documentElement.style.setProperty("--bg", t[0]);
+  document.documentElement.style.setProperty("--paper", t[1]);
+  document.documentElement.style.setProperty("--ink", t[2]);
+  document.documentElement.style.setProperty("--accent", t[3]);
+  document.documentElement.style.setProperty("--tile", t[4]);
+  document.documentElement.style.setProperty("--line", t[5]);
+  if (b.dataset.t === "night") {
+    document.body.classList.add("night-mode");
+    $("#nightModeBtn").textContent = "☀️ Mode Terang";
+  } else {
+    document.body.classList.remove("night-mode");
+    $("#nightModeBtn").textContent = "🌙 Mode Gelap";
+  }
+});
+
+function changeZoom(d) {
+  zoom = Math.max(12, Math.min(24, zoom + d * 1.5));
+  document.querySelectorAll(".readerBody").forEach(el => el.style.fontSize = zoom + "px");
+}
+$("#plus").onclick = () => changeZoom(1);
+$("#minus").onclick = () => changeZoom(-1);
+$("#reset").onclick = () => { zoom = 16; document.querySelectorAll(".readerBody").forEach(el => el.style.fontSize = "16px"); };
+
+render();
+</script>
+</body>
+  </html>
